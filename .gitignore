@@ -1,0 +1,11 @@
+# Logs & Environment Variables
+.env
+.env.local
+.env.*.local
+*.log
+
+# Dependencies & Build Outputs
+node_modules/
+dist/
+.vite/
+.DS_Store
