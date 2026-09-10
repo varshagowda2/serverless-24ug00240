@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const anonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+const secretKey = process.env.SUPABASE_SECRET_KEY || '';
+const publishableKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
-const supabaseAnon = createClient(supabaseUrl, anonKey);
+const supabaseAdmin = createClient(supabaseUrl, secretKey);
+const supabaseAnon = createClient(supabaseUrl, publishableKey);
 
 async function runTests() {
-  console.log('=== 1. Testing Privileged Insert via Service Role Key (Edge Function flow) ===');
+  console.log('=== 1. Testing Privileged Insert via Secret Key (Edge Function flow) ===');
   const testPayload = {
     name: 'Gagan',
     email: 'gagan@example.com',

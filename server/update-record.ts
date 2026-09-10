@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://igivdidxxfsyjivjlhhc.supabase.co';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const secretKey = process.env.SUPABASE_SECRET_KEY || '';
 
-const supabase = createClient(supabaseUrl, serviceRoleKey);
+const supabase = createClient(supabaseUrl, secretKey);
 
 async function updateRecord() {
   console.log('Updating database record in Supabase PostgreSQL...');

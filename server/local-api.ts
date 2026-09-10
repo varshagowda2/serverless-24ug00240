@@ -24,16 +24,16 @@ const localDatabase: Array<{
 
 // Initialize Supabase Client if credentials exist
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY || '';
 const isSupabaseConfigured = Boolean(
   supabaseUrl && 
-  supabaseServiceKey && 
+  supabaseSecretKey && 
   !supabaseUrl.includes('example.supabase.co') &&
-  !supabaseServiceKey.includes('placeholder')
+  !supabaseSecretKey.includes('placeholder')
 );
 
 const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseServiceKey)
+  ? createClient(supabaseUrl, supabaseSecretKey)
   : null;
 
 /**

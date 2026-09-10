@@ -70,7 +70,37 @@ serve(async (req: Request) => {
 
     // 3. Connect to Supabase using privileged environment credentials
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SUPABASE_ANON_KEY') || '';
+    let secretKey = '';
+
+    const rawSecretKeys = Deno.env.get('SUPABASE_SECRET_KEYS');
+
+    if (rawSecretKeys) {
+      try {
+        const secretKeys = JSON.parse(rawSecretKeys);
+        secretKey = secretKeys['default'] || '';
+      } catch {
+        // ignore malformed JSON and use explicit secret key fallback
+      }
+    }
+
+    if (!secretKey) {
+      secretKey = Deno.env.get('SUPABASE_SECRET_KEY') || '';
+    }
+
+    if (!secretKey && !supabaseUrl.includes('example.supabase.co')) {
+      console.error('Server Configuration Error: Missing SUPABASE_SECRET_KEYS / SUPABASE_SECRET_KEY');
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Server configuration error',
+          error: 'Missing server secret credentials',
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     let record = {
       id: crypto.randomUUID(),
@@ -81,8 +111,8 @@ serve(async (req: Request) => {
       created_at: new Date().toISOString(),
     };
 
-    if (supabaseUrl && supabaseServiceKey && !supabaseUrl.includes('example.supabase.co')) {
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    if (supabaseUrl && secretKey && !supabaseUrl.includes('example.supabase.co')) {
+      const supabase = createClient(supabaseUrl, secretKey);
 
       const { data: insertedData, error: dbError } = await supabase
         .from('sanitized_submissions')
